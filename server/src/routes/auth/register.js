@@ -1,13 +1,15 @@
 const { Router} = require('express');
-const User = require('../../models/user');
+// const User = require('../../models/user');
 const UserEntry = require('../../models/user');
 
 const router = Router();
 
 router.post('/', async (req, res, next) => {
     try {
-        if (req.body.validateUser === true) {
+        if (req.body.validate === true) {
+            // console.log(req.body.username);
             const entry = await UserEntry.findOne({ username: req.body.username});
+            // console.log(entry);
             if (entry) {
                 res.status(409);
                 throw new Error('Username already in use.');
