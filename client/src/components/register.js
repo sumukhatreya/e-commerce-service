@@ -1,53 +1,26 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { fetchErrorHandler, fetchData } from '../utils/utils';
 
 const validateUsername = async (user) => {
     const username = user.trim();
     const validate = true;
-    const url = 'http://localhost:5000/registers/'
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({ username, validate }),
-            headers: {'Content-Type': 'application/json'}
-        });
-        console.log(res);
-        if (!res.ok) {
-            console.log(typeof res.status);
-            if (res.status <= 451) {
-                const jsonRes = await res.json();
-                console.log(jsonRes);
-                throw new Error(jsonRes.message);
-            } else if (res.status >= 500) {
-                console.log('Status text', res.statusText);
-                throw new Error(res.statusText);
-            }
-        }
-        return { validated: true, error: null };
-    } catch (err) {
-        console.log('This is the error', err);
-        return { validated: false, error: err.message };
+    const url = 'http://localhost:5000/register/';
+    const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ username, validate }),
+        headers: {'Content-Type': 'application/json'}
+    });
+    console.log(res);
+    if (!res.ok) {
+        await fetchErrorHandler(res);
     }
-}
-
-const fetchData = async (requestType, url, payload, headers) => {
-    try {
-        const res = fetch(url, {
-            method: requestType,
-            body: payload,
-            headers: headers
-        });
-        return res;
-    } catch (err) {
-
-    }
-    
-
+    return true;
 }
 
 export default function RegistrationForm() {
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -65,7 +38,7 @@ export default function RegistrationForm() {
             email: Yup.string().trim().email('Please enter a valid email').required('Required'),
             dateOfBirth: Yup.date().required('Required'),
             username: Yup.string().trim().required('Required'),
-            password: Yup.string().min(7, 'Your password should be at least 7 charcaters long')
+            password: Yup.string().min(7, 'Your password should be at least 7 characters long')
                 .required('Required'),
             repeatedPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
                 .required('Required')
@@ -75,16 +48,16 @@ export default function RegistrationForm() {
             console.log(formik.errors);
             try {
                 console.log(values, values.username);
-                const { validated, error } = await validateUsername(values.username);
-                console.log('Validated', validated, 'Error', error);
-                if (validated) {
-                    setError(null);
-                    console.log('fetch api call here');
-                } else {
-                    throw new Error(error);
-                }   
+                await validateUsername(values.username);
+                setError('');
+                console.log('fetch request here');
+                const payload = JSON.stringify(formik.values);
+                const header = { 'Content-Type': 'application/json' };
+                await fetchData('POST', 'http://localhost:5000/register', payload, header);
+                console.log('Redirect to products page after receiving JWT.');
             } catch (err) {
-                console.log(err.message);
+                console.log('Error', err);
+                formik.values.repeatedPassword = '';
                 setError(err.message);
             }
         }

@@ -10,11 +10,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    first_name: {
+    firstName: {
         type: String,
         required: true
     },
-    last_name: {
+    lastName: {
         type: String,
         required: true
     },
@@ -22,11 +22,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date_of_birth: {
+    dateOfBirth: {
         type: Date,
         required: true
     },
-    shipping_address: {
+    shippingAddress: {
         type: String
     },
 });
