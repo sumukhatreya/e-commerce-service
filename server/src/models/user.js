@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { hashPassword } = require('../utils');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -29,6 +30,17 @@ const userSchema = new mongoose.Schema({
     shippingAddress: {
         type: String
     },
+});
+
+userSchema.pre('save', async function (next) {
+    try {
+        console.log('User about to be saved to db', this);
+        this.username = this.username.trim();
+        this.password = await hashPassword(this.password);
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
 const User = mongoose.model('user', userSchema);

@@ -16,12 +16,14 @@ const fetchData = async (requestType, url, payload, headers) => {
     const res = await fetch(url, {
         method: requestType,
         body: payload,
-        headers: headers
+        headers: headers,
+        credentials: 'same-origin'
     });
     if (!res.ok) {
         await fetchErrorHandler(res);
     }
     console.log(res);
+    console.log('Cookie', res.cookie);
     return res;
 }
 
