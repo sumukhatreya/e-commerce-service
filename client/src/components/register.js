@@ -33,11 +33,11 @@ export default function RegistrationForm() {
             repeatedPassword:''
         },
         validationSchema: Yup.object({
-            firstName: Yup.string().trim().required('Required'),
-            lastName: Yup.string().trim().required('Required'),
-            email: Yup.string().trim().email('Please enter a valid email').required('Required'),
+            firstName: Yup.string().required('Required'),
+            lastName: Yup.string().required('Required'),
+            email: Yup.string().email('Please enter a valid email').required('Required'),
             dateOfBirth: Yup.date().required('Required'),
-            username: Yup.string().trim().required('Required'),
+            username: Yup.string().required('Required'),
             password: Yup.string().min(7, 'Your password should be at least 7 characters long')
                 .required('Required'),
             repeatedPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -71,7 +71,7 @@ export default function RegistrationForm() {
                 <input type='text' 
                        id='firstName' 
                        name='firstName' 
-                       value={formik.values.firstName}
+                       value={formik.values.firstName.trim()}
                        onChange={formik.handleChange}/>
 
                 {formik.touched && formik.errors.firstName && <h2>{formik.errors.firstName}</h2>}
@@ -80,7 +80,7 @@ export default function RegistrationForm() {
                 <input type='text' 
                        id='lastName' 
                        name='lastName' 
-                       value={formik.values.lastName}
+                       value={formik.values.lastName.trim()}
                        onChange={formik.handleChange}/>
 
                 {formik.touched && formik.errors.lastName && <h2>{formik.errors.lastName}</h2>}
@@ -89,7 +89,7 @@ export default function RegistrationForm() {
                 <input type='email' 
                        id='email' 
                        name='email' 
-                       value={formik.values.email}
+                       value={formik.values.email.trim()}
                        onChange={formik.handleChange}/>
 
                 {formik.touched && formik.errors.email && <h2>{formik.errors.email}</h2>}
@@ -107,7 +107,7 @@ export default function RegistrationForm() {
                 <input type='string' 
                        id='username' 
                        name='username' 
-                       value={formik.values.username}
+                       value={formik.values.username.trim()}
                        onChange={formik.handleChange}/>
 
                 {formik.touched && formik.errors.username && <h2>{formik.errors.username}</h2>}

@@ -1,22 +1,23 @@
 const { Router } = require('express');
 const UserEntry = require('../../models/user');
-class AuthorizationError extends Error{};
+const { createJWT } = require('../../utils');
+const bcrypt = require('bcrypt');
+class AuthError extends Error{};
 
 const router = Router();
 
 router.post('/', async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        console.log(req.body, username, password);
-        const userEntry = await UserEntry.findOne({ username: username});
-        console.log(userEntry);
-        if (userEntry && userEntry.password === password) {
-            res.status(200).json({message: 'Login successful!'});
+        const user = await UserEntry.findOne({ username: req.body.username });
+        if (user && await bcrypt.compare(req.body.password, user.password)) {
+            const token = createJWT(user._id, '23h');
+            res.cookie('jwt', token, { httpOnly: true });
+            res.status(200).json({ message: 'Login successful' });
         } else {
-            throw new AuthorizationError('Invalid credentials. Login unsuccessful.');
+            throw new AuthError('Invalid credentials');
         }
     } catch (err) {
-        if (err instanceof AuthorizationError) {
+        if (err instanceof AuthError) {
             res.status(401);
         }
         next(err);

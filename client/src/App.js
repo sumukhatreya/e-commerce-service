@@ -1,7 +1,8 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import RegistrationForm from './components/register'
+import RegistrationForm from './components/register';
+import LoginForm from './components/login';
 
 
 class App extends React.Component {
@@ -11,10 +12,14 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path='/register'>
-            <div className='form-display'>
+            <div className='formDisplay'>
               <RegistrationForm />
             </div>
-
+          </Route>
+          <Route path='/login'>
+            <div className='formDisplay'>
+              <LoginForm />
+            </div>
           </Route>
         </Switch>
       </Router>
