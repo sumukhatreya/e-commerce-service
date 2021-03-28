@@ -53,7 +53,7 @@ export default function RegistrationForm() {
                 console.log('fetch request here');
                 const payload = JSON.stringify(formik.values);
                 const header = { 'Content-Type': 'application/json' };
-                await fetchData('POST', 'http://localhost:5000/register', payload, header);
+                await fetchData('POST', 'http://localhost:5000/register', payload, header, 'include');
                 console.log('Redirect to products page after receiving JWT.');
             } catch (err) {
                 console.log('Error', err);

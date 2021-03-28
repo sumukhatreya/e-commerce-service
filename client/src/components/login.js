@@ -19,8 +19,8 @@ export default function LoginForm() {
             try {
                 const payload = JSON.stringify(values);
                 console.log(payload);
-                const headers = { 'Content-Type': 'application/json'};
-                await fetchData('POST', 'http://localhost:5000/login', payload, headers);
+                const header = { 'Content-Type': 'application/json' };
+                await fetchData('POST', 'http://localhost:5000/login', payload, header, 'include');
                 setError('');
                 console.log('Redirect to products page.');
             } catch (err) {
@@ -51,6 +51,8 @@ export default function LoginForm() {
                        onChange={formik.handleChange}/>
                 
                 {formik.touched && formik.errors.password && <h2>{formik.errors.password}</h2>}
+
+                <a href="https://www.google.com">Google</a>
 
                 <button type='submit'>Login</button>
 
