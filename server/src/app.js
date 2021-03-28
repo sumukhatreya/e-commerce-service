@@ -11,10 +11,11 @@ const register = require('./routes/auth/register');
 const app = express();
 app.use(helmet());
 app.use(morgan('dev'));
-// app.use(cors({
-//     origin: process.env.CORS_ORIGIN
-// }));
-app.use(cors());
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
+// app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 

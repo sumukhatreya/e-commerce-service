@@ -21,7 +21,7 @@ router.post('/', async (req, res, next) => {
             const userEntry = new UserEntry(req.body);
             const createdEntry = await userEntry.save();
             const token = createJWT(createdEntry._id, '23h');
-            res.cookie('jwt', token, { httpOnly: true });
+            res.cookie('jwt', token, { httpOnly: true, sameSite: 'strict' });
             res.status(201).json(createdEntry._id);
         }
     } catch (err) {
