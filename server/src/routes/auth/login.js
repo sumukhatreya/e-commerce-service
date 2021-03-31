@@ -1,12 +1,12 @@
 const { Router } = require('express');
 const UserEntry = require('../../models/user');
-const { createJWT } = require('../../utils');
+const { createJWT, verifyJWT } = require('../../utils');
 const bcrypt = require('bcrypt');
 class AuthError extends Error{};
 
 const router = Router();
 
-router.post('/', async (req, res, next) => {
+router.post('/', verifyJWT, async (req, res, next) => {
     try {
         const user = await UserEntry.findOne({ username: req.body.username });
         if (user && await bcrypt.compare(req.body.password, user.password)) {

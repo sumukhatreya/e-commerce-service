@@ -1,10 +1,10 @@
 const { Router} = require('express');
 const UserEntry = require('../../models/user');
-const { createJWT } = require('../../utils');
+const { createJWT, verifyJWT } = require('../../utils');
 
 const router = Router();
 
-router.post('/', async (req, res, next) => {
+router.post('/', verifyJWT , async (req, res, next) => {
     try {
         // console.log(req.body);
         if (req.body.validate) {
@@ -22,7 +22,7 @@ router.post('/', async (req, res, next) => {
             const createdEntry = await userEntry.save();
             const token = createJWT(createdEntry._id, '23h');
             res.cookie('jwt', token, { httpOnly: true, sameSite: 'strict' });
-            res.status(201).json(createdEntry._id);
+            res.status(201).json({ message: 'Account created' });
         }
     } catch (err) {
         next(err);

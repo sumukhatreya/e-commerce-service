@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { fetchData } from '../utils/utils';
+import { useAuth } from '../utils/custom hooks/useAuth';
 
 export default function LoginForm() {
     const [error, setError] = useState('');
+    const { isLoading, isLoggedIn, isError } = useAuth('http://localhost:5000/login');
 
     const formik = useFormik({
         initialValues: {
@@ -20,7 +22,7 @@ export default function LoginForm() {
                 const payload = JSON.stringify(values);
                 console.log(payload);
                 const header = { 'Content-Type': 'application/json' };
-                await fetchData('POST', 'http://localhost:5000/login', payload, header, 'include');
+                await fetchData('POST', 'http://localhost:5000/login', payload, header);
                 setError('');
                 console.log('Redirect to products page.');
             } catch (err) {
@@ -51,8 +53,6 @@ export default function LoginForm() {
                        onChange={formik.handleChange}/>
                 
                 {formik.touched && formik.errors.password && <h2>{formik.errors.password}</h2>}
-
-                <a href="https://www.google.com">Google</a>
 
                 <button type='submit'>Login</button>
 

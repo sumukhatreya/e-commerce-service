@@ -21,6 +21,7 @@ app.use(cookieParser());
 
 
 app.get('/', (req, res) => {
+    res.cookie('myCookie', 'this is a cookie', { httpOnly: true, sameSite: 'strict'});
     res.json({
         message: "This should redirect to /products."
     }); 

@@ -6,6 +6,18 @@ import LoginForm from './components/login';
 
 
 class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isLoggedIn: false
+    };
+  }
+
+  updateLogin = () => {
+    this.setState({
+      isLoggedIn: true
+    })
+  }
 
   render() {
     return(
