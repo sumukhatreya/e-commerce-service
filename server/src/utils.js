@@ -13,26 +13,22 @@ const createJWT = (userId, expiration) => {
     return jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: expiration });
 }
 
-// Custom middleware to verify JWT.
-const verifyJWT = (req, res, next) => {
+const verifyJWT = (req) => {
+    const isAuth = true;
+    const token = req.cookies.jwt;
     try {
-        const token = req.cookies.jwt;
         if (token) {
-            jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
-                if (err) {
-                    throw err;
-                } else {
-                    console.log(decodedToken);
-                    next();
-                }
-            });
+            const res = jwt.verify(token, process.env.SECRET_KEY);
         } else {
-            throw new AuthError('JWT does not exist.');
+            throw new Error('Token not found');
         }
+        return isAuth;
     } catch (err) {
-        res.status(401);
-        next(err);
+        return !isAuth;
     }
+
+
+
 }
 
 module.exports = {

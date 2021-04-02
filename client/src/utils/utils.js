@@ -1,13 +1,10 @@
-class AuthError extends Error{};
+// class AuthError extends Error{};
 
 // Error handler for fetch requests
 const fetchErrorHandler = async (res) => {
     if (res.status <= 451) {
         const jsonRes = await res.json();
         console.log(jsonRes);
-        if (res.status === 401) {
-            throw new AuthError(jsonRes.message);
-        }
         throw new Error(jsonRes.message);
     } else if (res.status >= 500) {
         console.log('Status text', res.statusText);

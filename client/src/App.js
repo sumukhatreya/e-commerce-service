@@ -23,15 +23,18 @@ class App extends React.Component {
     return(
       <Router>
         <Switch>
-          <Route path='/register'>
+          <Route exact path='/register'>
             <div className='formDisplay'>
               <RegistrationForm />
             </div>
           </Route>
-          <Route path='/login'>
+          <Route exact path='/login'>
             <div className='formDisplay'>
               <LoginForm />
             </div>
+          </Route>
+          <Route exact path='/products'>
+            <h1>Welcome to the products page!</h1>
           </Route>
         </Switch>
       </Router>

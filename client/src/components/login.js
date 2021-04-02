@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { fetchData } from '../utils/utils';
-import { useAuth } from '../utils/custom hooks/useAuth';
+import useAuth from '../utils/custom hooks/useAuth';
+import { useHistory, Redirect } from 'react-router-dom';
 
 export default function LoginForm() {
     const [error, setError] = useState('');
+    const history = useHistory();
     const { isLoading, isLoggedIn, isError } = useAuth('http://localhost:5000/login');
 
     const formik = useFormik({
@@ -25,6 +27,7 @@ export default function LoginForm() {
                 await fetchData('POST', 'http://localhost:5000/login', payload, header);
                 setError('');
                 console.log('Redirect to products page.');
+                history.push('/products');
             } catch (err) {
                 console.log(err);
                 values.password = '';
@@ -32,6 +35,20 @@ export default function LoginForm() {
             }
         }
     })
+
+    if (isLoading) {
+        return <h1>Loading...</h1>
+    } else {
+        if (isLoggedIn) {
+            console.log('isLoggedIn', isLoggedIn);
+            // history.push('/products');
+            return <Redirect to='/products'/> // useHistory cannot be used here.
+        }
+        // if (isError) {
+        //     setError(isError);
+        // }
+    }
+    
 
     return (
         <div>
@@ -56,7 +73,7 @@ export default function LoginForm() {
 
                 <button type='submit'>Login</button>
 
-                {error && <h2>{error}</h2>}
+                {/* {error && <h2>{error}</h2>} */}
             </form>
 
         </div>
