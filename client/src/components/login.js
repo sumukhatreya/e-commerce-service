@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { fetchData } from '../utils/utils';
 import useAuth from '../utils/custom hooks/useAuth';
 import { useHistory, Redirect } from 'react-router-dom';
 
-export default function LoginForm() {
+export default function LoginForm({ loginFunction }) {
     const [error, setError] = useState('');
     const history = useHistory();
-    const { isLoading, isLoggedIn, isError } = useAuth('http://localhost:5000/login');
+    const header = { 'Content-Type' : 'application/json' };
+    const { isLoading, isLoggedIn, isError } = useAuth('http://localhost:5000/login', 'POST', null, header);
+    useEffect(() => {
+        if(isLoggedIn) {
+            console.log('isLoggedIn useEffect', isLoggedIn);
+            loginFunction(isLoggedIn);
+        };
+    }, [isLoggedIn]);
 
     const formik = useFormik({
         initialValues: {
@@ -27,6 +34,7 @@ export default function LoginForm() {
                 await fetchData('POST', 'http://localhost:5000/login', payload, header);
                 setError('');
                 console.log('Redirect to products page.');
+                loginFunction(true);
                 history.push('/products');
             } catch (err) {
                 console.log(err);
@@ -41,7 +49,6 @@ export default function LoginForm() {
     } else {
         if (isLoggedIn) {
             console.log('isLoggedIn', isLoggedIn);
-            // history.push('/products');
             return <Redirect to='/products'/> // useHistory cannot be used here.
         }
         // if (isError) {

@@ -11,17 +11,26 @@ class App extends React.Component {
     this.state = {
       isLoggedIn: false
     };
+    console.log('App is being re-rendered to the DOM.');
   }
 
-  updateLogin = () => {
+  updateLogin = (newLogin) => {
     this.setState({
-      isLoggedIn: true
-    })
+      isLoggedIn: newLogin
+    }, () => {
+      console.log('Login state', this.state.isLoggedIn);
+      console.log('New login state', newLogin);
+    });
+    
   }
 
   render() {
+    console.log('Constructor login state', this.state.isLoggedIn);
     return(
       <Router>
+        <div>
+          {this.state.isLoggedIn ? <h1>Logged in!</h1> : <h1>Not logged in</h1>}
+        </div>
         <Switch>
           <Route exact path='/register'>
             <div className='formDisplay'>
@@ -30,7 +39,7 @@ class App extends React.Component {
           </Route>
           <Route exact path='/login'>
             <div className='formDisplay'>
-              <LoginForm />
+              <LoginForm loginFunction={(newLogin) => {this.updateLogin(newLogin)}}/>
             </div>
           </Route>
           <Route exact path='/products'>

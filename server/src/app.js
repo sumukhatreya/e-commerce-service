@@ -7,6 +7,8 @@ require('dotenv').config();
 const middlewares = require('./errorHandlers');
 const login = require('./routes/auth/login');
 const register = require('./routes/auth/register');
+const products = require('./routes/products/products');
+const sell = require('./routes/sell');
 
 const app = express();
 app.use(helmet());
@@ -30,6 +32,14 @@ app.get('/', (req, res) => {
 // Auth routes
 app.use('/login', login);
 app.use('/register', register);
+
+// Product routes
+app.use('/products', products);
+// app.use('/products/:id', productsid)
+
+// Sell route
+app.use('/sell', sell);
+
 
 // Error handling
 app.use(middlewares.notFound);
