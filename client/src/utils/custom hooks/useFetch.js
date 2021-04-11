@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchData } from '../utils';
 
-export default function useAuth(url, requestType, payload, headers) {
+export default function useFetch(url, requestType, payload, headers) {
     const [isLoading, setLoading] = useState(true);
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setError] = useState('');

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { fetchData } from '../utils/utils';
-import useAuth from '../utils/custom hooks/useAuth';
+import useFetch from '../utils/custom hooks/useFetch';
 import { useHistory, Redirect } from 'react-router-dom';
 
 export default function LoginForm({ loginFunction }) {
     const [error, setError] = useState('');
     const history = useHistory();
     const header = { 'Content-Type' : 'application/json' };
-    const { isLoading, isLoggedIn, isError } = useAuth('http://localhost:5000/login', 'POST', null, header);
+    const { isLoading, isLoggedIn, isError } = useFetch('http://localhost:5000/login', 'POST', null, header);
     useEffect(() => {
         if(isLoggedIn) {
             console.log('isLoggedIn useEffect', isLoggedIn);

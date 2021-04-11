@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import RegistrationForm from './components/register';
 import LoginForm from './components/login';
+import ProductList from './components/product/productList';
 
 
 class App extends React.Component {
@@ -43,7 +44,7 @@ class App extends React.Component {
             </div>
           </Route>
           <Route exact path='/products'>
-            <h1>Welcome to the products page!</h1>
+            <ProductList />
           </Route>
         </Switch>
       </Router>
