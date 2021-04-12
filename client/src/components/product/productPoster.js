@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { StyleSheet, css } from 'aphrodite';
 
-export default function ProductPoster({ imageUrl, title, price, rating }) {
+export default function ProductPoster({ key, imageUrl, title, price, rating }) {
     
     return (
         <div className={css(styles.posterLayout)}>

@@ -44,7 +44,7 @@ class App extends React.Component {
             </div>
           </Route>
           <Route exact path='/products'>
-            <ProductList />
+            <ProductList loginFunction={(newLogin) => {this.updateLogin(newLogin)}}/>
           </Route>
         </Switch>
       </Router>
