@@ -9,7 +9,11 @@ export default function ProductList({ loginFunction }) {
     const { isLoading, isLoggedIn, isError, data } = useFetch('http://localhost:5000/products', 'GET', null, header);
 
     useEffect(() => {
-        loginFunction(isLoggedIn);
+        if (isLoggedIn) {
+            loginFunction(true);
+        } else {
+            loginFunction(false);
+        }
     }, [isLoggedIn]);
 
     if (isLoading) {
@@ -20,7 +24,8 @@ export default function ProductList({ loginFunction }) {
         <div className={css(styles.productListLayout)}>
             {
                 data.map(entry => (
-                    <ProductPoster key={entry._id} 
+                    <ProductPoster key={entry._id}
+                                   id={entry._id}
                                    imageUrl={entry.image} 
                                    title={entry.title} 
                                    price={entry.price} 

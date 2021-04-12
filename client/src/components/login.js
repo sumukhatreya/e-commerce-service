@@ -14,7 +14,7 @@ export default function LoginForm({ loginFunction }) {
     useEffect(() => {
         if(isLoggedIn) {
             console.log('isLoggedIn useEffect', isLoggedIn);
-            loginFunction(isLoggedIn);
+            loginFunction(true);
         };
     }, [isLoggedIn]);
 

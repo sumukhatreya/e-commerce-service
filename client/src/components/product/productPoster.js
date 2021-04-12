@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { StyleSheet, css } from 'aphrodite';
 
-export default function ProductPoster({ key, imageUrl, title, price, rating }) {
+export default function ProductPoster({ id, imageUrl, title, price, rating }) {
     
     return (
         <div className={css(styles.posterLayout)}>
             <img src={imageUrl} alt={title} className={css(styles.imageLayout)}/>
-            <h2 >{title}</h2>
+            <Link to={`/products/${id}`}>
+                <h2 >{title}</h2>
+            </Link>
             <h3>$ {price}</h3>
             {rating ? <h3>{rating} / 5</h3> : <h3>- / 5</h3>}
         </div>

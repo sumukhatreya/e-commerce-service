@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import RegistrationForm from './components/register';
 import LoginForm from './components/login';
 import ProductList from './components/product/productList';
+import ProductPage from './components/product/productPage';
 
 
 class App extends React.Component {
@@ -45,6 +46,9 @@ class App extends React.Component {
           </Route>
           <Route exact path='/products'>
             <ProductList loginFunction={(newLogin) => {this.updateLogin(newLogin)}}/>
+          </Route>
+          <Route exact path='/products/:id'>
+            <ProductPage />
           </Route>
         </Switch>
       </Router>

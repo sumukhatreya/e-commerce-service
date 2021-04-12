@@ -14,17 +14,18 @@ const createJWT = (userId, expiration) => {
 }
 
 const verifyJWT = (req) => {
-    const isAuth = true;
     const token = req.cookies.jwt;
     try {
         if (token) {
-            const res = jwt.verify(token, process.env.SECRET_KEY); // unsure if this line of code will work as intended.
+            const res = jwt.verify(token, process.env.SECRET_KEY); // unsure if this line of code will work as intended - I hope this throws an error that will be caught in the catch block if the jwt is invalid.
+            console.log('Verified payload', res);
+            console.log('Payload', res.userId, 'Payload type', typeof res.userId);
+            return res.userId;
         } else {
             throw new Error('Token not found');
         }
-        return isAuth;
     } catch (err) {
-        return !isAuth;
+        return '';
     }
 }
 
