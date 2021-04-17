@@ -29,6 +29,11 @@ const productSchema = new mongoose.Schema({
     available: {
         type: Boolean,
         required: true
+    },
+    ratingsRef: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RatingsAndReviews',
+        required: true
     }
 }, { timestamps: true });
 

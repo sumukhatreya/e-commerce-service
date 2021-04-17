@@ -1,6 +1,8 @@
 const { Router } = require('express');
-const ProductEntry = require('../../models/product'); 
+const ProductEntry = require('../../models/product');
+const RatingsAndReviews = require('../../models/productRatingsAndReviews');
 const { verifyJWT } = require('../../utils');
+
 
 const router = Router();
 
@@ -17,9 +19,21 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-
-
-
+router.get('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        console.log('Params Id', id);
+        const product = await ProductEntry.findById(id).populate('ratingsRef', 'ratingsAndReviews' , RatingsAndReviews);
+        if (!product.available) {
+            res.status(404);
+            throw new Error('Resource removed');
+        }
+        console.log(product);
+        res.status(200).json(product);
+    } catch (err) {
+        next(err);
+    }
+});
 
 
 module.exports = router;
