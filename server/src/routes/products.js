@@ -1,10 +1,11 @@
 const { Router } = require('express');
-const ProductEntry = require('../../models/product');
-const RatingsAndReviews = require('../../models/productRatingsAndReviews');
-const { verifyJWT } = require('../../utils');
-
+const ProductEntry = require('../models/product');
+const RatingsAndReviews = require('../models/productRatingsAndReviews');
+const { verifyJWT } = require('../utils');
 
 const router = Router();
+
+
 
 router.get('/', async (req, res, next) => {
     try {
@@ -23,7 +24,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
         console.log('Params Id', id);
-        const product = await ProductEntry.findById(id).populate('ratingsRef', 'ratingsAndReviews' , RatingsAndReviews);
+        const product = await ProductEntry.findById(id).populate('ratingsRef', 'ratingsAndReviews', RatingsAndReviews);
         if (!product.available) {
             res.status(404);
             throw new Error('Resource removed');
@@ -34,6 +35,47 @@ router.get('/:id', async (req, res, next) => {
         next(err);
     }
 });
+
+router.post('/:id', async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/:id/review', async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/:id/review', async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.put('/:id/review', async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.delete('/:id/review', async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 
 module.exports = router;

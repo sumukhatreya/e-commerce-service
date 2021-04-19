@@ -7,7 +7,7 @@ require('dotenv').config();
 const middlewares = require('./errorHandlers');
 const login = require('./routes/auth/login');
 const register = require('./routes/auth/register');
-const products = require('./routes/products/products');
+const products = require('./routes/products');
 const sell = require('./routes/sell');
 
 const app = express();

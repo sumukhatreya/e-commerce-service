@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const ratingAndReviewSchema = new mongoose.Schema({
+    productRef: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
     ratingsAggregate: {
         type: Number,
         required: true,
