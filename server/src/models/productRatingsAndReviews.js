@@ -1,5 +1,24 @@
 const mongoose = require('mongoose');
 
+const arraySchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        index: true
+    },
+    rating: {
+        type: Number,
+        required: true
+    },
+    review: {
+        type: String
+    },
+    lastUpdated: {
+        type: Date,
+        required: true
+    }
+});
+
 const ratingAndReviewSchema = new mongoose.Schema({
     productRef: {
         type: mongoose.Schema.Types.ObjectId,
@@ -16,26 +35,7 @@ const ratingAndReviewSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    ratingsAndReviews: [
-        {
-            username: {
-                type: String,
-                required: true,
-                index: true
-            },
-            rating: {
-                type: Number,
-                required: true
-            },
-            review: {
-                type: String
-            },
-            lastUpdated: {
-                type: Date,
-                required: true
-            }
-        }
-    ]
+    ratingsAndReviews: [arraySchema]
 });
 
 const RatingsAndReviews = mongoose.model('ratingAndReview', ratingAndReviewSchema);
