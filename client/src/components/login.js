@@ -9,7 +9,7 @@ export default function LoginForm({ loginFunction }) {
     const [error, setError] = useState('');
     const history = useHistory();
     const header = { 'Content-Type' : 'application/json' };
-    const { isLoading, isLoggedIn, isError } = useFetch('http://localhost:5000/login', 'POST', null, header);
+    const { isLoading, isLoggedIn, isError } = useFetch('http://localhost:5000/login', 'GET', null, header);
     
     useEffect(() => {
         if(isLoggedIn) {
