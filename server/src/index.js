@@ -1,5 +1,4 @@
 const app = require('./app');
-// const monk = require('monk');
 const mongoose = require('mongoose');
 
 const port = process.env.PORT || 5000;

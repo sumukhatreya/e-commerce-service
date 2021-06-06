@@ -7,7 +7,7 @@ export default function useFetch(url, requestType, payload, headers) {
     const [isError, setError] = useState('');
     const [data, setData] = useState(null);
     useEffect(() => {
-        async function fetchAuth(url) {
+        async function retrieveAuthAndComponentData(url) {
             try {
                 const res = await fetchData(requestType, url, payload, headers);
                 console.log('Response headers 1', res.headers.get('isLoggedIn'));
@@ -24,7 +24,7 @@ export default function useFetch(url, requestType, payload, headers) {
             }
             setLoading(false);
         }
-        fetchAuth(url);
+        retrieveAuthAndComponentData(url);
     }, [url]);
     return { isLoading, isLoggedIn, isError, data };
 }

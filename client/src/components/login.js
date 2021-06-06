@@ -52,9 +52,9 @@ export default function LoginForm({ loginFunction }) {
             console.log('isLoggedIn', isLoggedIn);
             return <Redirect to='/products'/> // useHistory cannot be used here.
         }
-        // if (isError) {
-        //     setError(isError);
-        // }
+        if (isError) {
+            setError(isError);
+        }
     }
     
 
@@ -74,14 +74,14 @@ export default function LoginForm({ loginFunction }) {
                 <input type='password'
                        id='password'
                        name='password'
-                       value={formik.values.password.trim()}
+                       value={formik.values.password}
                        onChange={formik.handleChange}/>
                 
                 {formik.touched && formik.errors.password && <h2>{formik.errors.password}</h2>}
 
                 <button type='submit'>Login</button>
 
-                {/* {error && <h2>{error}</h2>} */}
+                {error && <h2>{error}</h2>}
             </form>
 
         </div>

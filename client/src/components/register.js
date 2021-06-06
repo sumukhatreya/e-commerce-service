@@ -65,7 +65,7 @@ export default function RegistrationForm() {
     // console.log(formik.values);
 
     return(
-        <div className='registration-form'>
+        <div className='registrationForm'>
             <form onSubmit={formik.handleSubmit}>
                 <label htmlFor='firstName'>First name</label>
                 <input type='text' 

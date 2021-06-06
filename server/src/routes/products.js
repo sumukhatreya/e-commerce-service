@@ -79,14 +79,18 @@ router.post('/:id/review', async (req, res, next) => {
             review: req.body.review,
             lastUpdated: Date.now()
         };
-        await RatingsAndReviews.updateOne({
-            productRef: req.params.id
-        }, {
-            $push: {
-                ratingsAndReviews: userRating
-            }
-        });
-        res.status(201).json({ message: 'Rating and review entry added'});
+        const ratingAndReviewEntry = await RatingsAndReviews.find({ productRef: req.params.id });
+        ratingAndReviewEntry.ratingsAggregate += req.body.rating;
+        ratingAndReviewEntry.numOfRatings += 1;
+        await ratingAndReviewEntry.updateOne({ $push: { ratingsAndReviews: userRating }});
+        // await RatingsAndReviews.updateOne({
+        //     productRef: req.params.id
+        // }, {
+        //     $push: {
+        //         ratingsAndReviews: userRating
+        //     }
+        // });
+        res.status(201).json(ratingAndReviewEntry);
     } catch (err) {
         next(err);
     }
@@ -103,6 +107,7 @@ router.put('/:id/review', async (req, res, next) => {
             throw new Error('Unauthorized user');
         }
         const ratingAndReviewEntry = await RatingsAndReviews.find({ productRef: req.params.id });
+        // ratingAndReviewEntry.
         // console.log(ratingAndReviewEntry);
         const ratingArray = ratingAndReviewEntry[0].ratingsAndReviews;
         let desiredEntry = ratingArray.find(entry => entry.username === header);
