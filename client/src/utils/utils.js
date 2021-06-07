@@ -20,10 +20,10 @@ const fetchData = async (requestType, url, payload, headers) => {
         headers: headers,
         credentials: 'include'
     });
+    console.log(res);
     if (!res.ok) {
         await fetchErrorHandler(res);
     }
-    console.log(res);
     return res;
 }
 

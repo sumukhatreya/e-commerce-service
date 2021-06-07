@@ -5,8 +5,6 @@ const { verifyJWT } = require('../utils');
 
 const router = Router();
 
-
-
 router.get('/', async (req, res, next) => {
     try {
         const isLoggedIn = verifyJWT(req);
@@ -36,6 +34,7 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+// Add to cart
 router.post('/:id', async (req, res, next) => {
     try {
 
