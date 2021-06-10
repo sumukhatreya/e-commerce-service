@@ -40,4 +40,5 @@ const productSchema = new mongoose.Schema({
 productSchema.index({ 'createdAt': -1 });
 
 const Product = mongoose.model('product', productSchema);
+
 module.exports = Product;

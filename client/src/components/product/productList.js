@@ -4,20 +4,30 @@ import ProductPoster from './productPoster';
 import useFetch from '../../utils/custom hooks/useFetch';
 import { StyleSheet, css } from 'aphrodite';
 
+// Why did setError() within the conditional lead to an infinite loop? Why does it work when calles within the useEffect() hook? I've done something similar with the setState() function in theLogin component (that is, I've used setState() within a conditional), but it works fine there. Why?
 export default function ProductList({ loginFunction }) {
+    const [error, setError] = useState('');
     const header = { 'Content-Type': 'application/json' };
     const { isLoading, isLoggedIn, isError, data } = useFetch('http://localhost:5000/products', 'GET', null, header);
 
     useEffect(() => {
         if (isLoggedIn) {
             loginFunction(true);
-        } else {
-            loginFunction(false);
         }
-    }, [isLoggedIn]);
+        if (isError) {
+            setError(isError);
+        }
+        // } else {
+        //     loginFunction(false);
+        // }
+    }, [isLoggedIn, isError]);
 
     if (isLoading) {
-        return (<h1>Loading...</h1>);
+        return <h1>Loading...</h1>;
+    } else if (error) {
+        // setError(isError);
+        console.log('Setting error within ProductList component');
+        return <h1>{error}</h1>;
     }
 
     return(

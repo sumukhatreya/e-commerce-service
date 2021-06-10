@@ -1,4 +1,3 @@
-// class AuthError extends Error{};
 
 // Error handler for fetch requests
 const fetchErrorHandler = async (res) => {

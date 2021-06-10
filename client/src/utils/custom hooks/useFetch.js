@@ -19,8 +19,9 @@ export default function useFetch(url, requestType, payload, headers) {
                 console.log('Json res', jsonRes);
                 setData(jsonRes);
             } catch (err) {
-                console.log('In the useFetch error handler');
+                console.log('In the useFetch error handler', err.message);
                 setError(err.message);
+                // setLoading(false);
             }
             setLoading(false);
         }

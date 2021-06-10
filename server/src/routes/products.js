@@ -10,8 +10,7 @@ router.get('/', async (req, res, next) => {
         const isLoggedIn = verifyJWT(req);
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': isLoggedIn };
         res.set(headers);
-        const productEntries = await ProductEntry.find({ available: true }, 'image title price rating')
-                                                 .sort({ createdAt: -1 });
+        const productEntries = await ProductEntry.find({ available: true }, 'image title price rating'); // I had .sort({ createdAt: -1 }) chained on to the end of this. I don't think this is really necessary since I'm maintaining an index on createdAt, sorted in descending order.
         res.status(200).json(productEntries);
     } catch (err) {
         next(err);
@@ -20,9 +19,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const { id } = req.params;
-        console.log('Params Id', id);
-        const product = await ProductEntry.findById(id).populate('ratingsRef', 'ratingsAndReviews', RatingsAndReviews);
+        const product = await ProductEntry.findById(req.params.id).populate('ratingsRef', 'ratingsAndReviews',  RatingsAndReviews);
         if (!product.available) {
             res.status(404);
             throw new Error('Resource removed');
@@ -49,13 +46,15 @@ router.get('/:id/review', async (req, res, next) => {
         const header = verifyJWT(req);
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
-        if (header === '') {
-            res.status(401);
-            throw new Error('Unauthorized user');
-        }
-        const ratingAndReviewEntry = await RatingsAndReviews.find({ productRef: req.params.id });
-        const reviewArray = ratingAndReviewEntry[0].ratingsAndReviews;
-        const userReview = reviewArray.find(entry => entry.username === header);
+        // if (header === '') {
+        //     res.status(401);
+        //     throw new Error('Unauthorized user');
+        // }
+        const ratingAndReviewEntry = await RatingsAndReviews.findOne({ productRef: req.params.id }, 'ratingsAndReviews');
+        console.log('ratingAndReviewEntry', ratingAndReviewEntry);
+        const userReview = await ratingAndReviewEntry.findOne({ username: 'quack' });
+        // const reviewArray = ratingAndReviewEntry[0].ratingsAndReviews;
+        // const userReview = reviewArray.find(entry => entry.username === header);
         console.log(userReview);
         res.status(200).json(userReview);
     } catch (err) {
@@ -65,7 +64,8 @@ router.get('/:id/review', async (req, res, next) => {
 
 router.post('/:id/review', async (req, res, next) => {
     try {
-        const header = verifyJWT(req);
+        // const header = verifyJWT(req);
+        const header = 'quack3904';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
@@ -78,18 +78,17 @@ router.post('/:id/review', async (req, res, next) => {
             review: req.body.review,
             lastUpdated: Date.now()
         };
-        const ratingAndReviewEntry = await RatingsAndReviews.find({ productRef: req.params.id });
-        ratingAndReviewEntry.ratingsAggregate += req.body.rating;
-        ratingAndReviewEntry.numOfRatings += 1;
+        const ratingAndReviewEntry = await RatingsAndReviews.findOne({ productRef: req.params.id });
         await ratingAndReviewEntry.updateOne({ $push: { ratingsAndReviews: userRating }});
-        // await RatingsAndReviews.updateOne({
-        //     productRef: req.params.id
-        // }, {
-        //     $push: {
-        //         ratingsAndReviews: userRating
-        //     }
-        // });
-        res.status(201).json(ratingAndReviewEntry);
+        await ratingAndReviewEntry.updateOne({ $inc: { ratingsAggregate: req.body.rating , numOfRatings: 1 }});
+        console.log('ratingAndReviews', ratingAndReviewEntry);
+        const updatedRating = (ratingAndReviewEntry.ratingsAggregate / ratingAndReviewEntry.numOfRatings).toFixed(1);
+        console.log(updatedRating);
+        const productEntry = await ProductEntry.findById(req.params.id);
+        productEntry.rating = updatedRating;
+        productEntry.save();
+        console.log(productEntry);
+        res.status(201).json(ratingAndReviewEntry); // Problem here: this doesn't return the updated document.
     } catch (err) {
         next(err);
     }

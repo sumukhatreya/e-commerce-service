@@ -31,8 +31,15 @@ const verifyJWT = (req) => {
     }
 }
 
+const setLoginHeader = (req, res) => {
+    const isLoggedIn = verifyJWT(req);
+    const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': isLoggedIn };
+    res.set(headers);
+}
+
 module.exports = {
     hashPassword,
     createJWT,
-    verifyJWT
+    verifyJWT,
+    setLoginHeader
 }
