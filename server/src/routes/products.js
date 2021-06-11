@@ -10,7 +10,7 @@ router.get('/', async (req, res, next) => {
         const isLoggedIn = verifyJWT(req);
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': isLoggedIn };
         res.set(headers);
-        const productEntries = await ProductEntry.find({ available: true }, 'image title price rating'); // I had .sort({ createdAt: -1 }) chained on to the end of this. I don't think this is really necessary since I'm maintaining an index on createdAt, sorted in descending order.
+        const productEntries = await ProductEntry.find({ available: true }, 'image title price rating'); // I had .sort({ createdAt: -1 }) chained to the end of this. I don't think this is necessary since I'm maintaining an index on createdAt, sorted in descending order.
         res.status(200).json(productEntries);
     } catch (err) {
         next(err);
@@ -40,22 +40,25 @@ router.post('/:id', async (req, res, next) => {
     }
 });
 
-// Unhappy with this code. There must be a way to find, update and return a subdocument within an array in Mongoose itself. None of the approaches I tried that involved only Mongoose queries worked, so I had to resort to plain JS array methods to get the job done (inefficiently). I'm facing essentially the same issue in the put request below.
 router.get('/:id/review', async (req, res, next) => {
     try {
-        const header = verifyJWT(req);
+        // const header = verifyJWT(req);
+        const header = 'quack';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
-        // if (header === '') {
-        //     res.status(401);
-        //     throw new Error('Unauthorized user');
-        // }
+        if (header === '') {
+            res.status(401);
+            throw new Error('Unauthorized user');
+        }
+
+        // The following code is very inefficient; I'm loading the entire document from memory and then searching for the relevant review entry, instead of directly loading the particular review entry object from the database in a single atomic operation (I couldn't figure out how to do this - see comment below).
         const ratingAndReviewEntry = await RatingsAndReviews.findOne({ productRef: req.params.id }, 'ratingsAndReviews');
         console.log('ratingAndReviewEntry', ratingAndReviewEntry);
-        const userReview = await ratingAndReviewEntry.findOne({ username: 'quack' });
-        // const reviewArray = ratingAndReviewEntry[0].ratingsAndReviews;
-        // const userReview = reviewArray.find(entry => entry.username === header);
-        console.log(userReview);
+        const userReview = ratingAndReviewEntry.ratingsAndReviews.find(entry => entry.username === header);
+
+        // The below line of code works, but it returns the entire document, not only the relevant subdocument, if there's a match. This seems to be the case with MongoDB. Every tutorial I've looked at for subdocument retrieval from an array says the same thing. I suppose I'll have to iterate through the entire document at the application level to find the relevant subdocument.
+        // const userReview = await RatingsAndReviews.findOne({ productRef: req.params.id, ratingsAndReviews: { $elemMatch: { 'username': 'groucho' } } });
+        console.log('userReview', userReview);
         res.status(200).json(userReview);
     } catch (err) {
         next(err);
@@ -65,7 +68,7 @@ router.get('/:id/review', async (req, res, next) => {
 router.post('/:id/review', async (req, res, next) => {
     try {
         // const header = verifyJWT(req);
-        const header = 'quack3904';
+        const header = 'grouchomarx2';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
@@ -78,17 +81,13 @@ router.post('/:id/review', async (req, res, next) => {
             review: req.body.review,
             lastUpdated: Date.now()
         };
-        const ratingAndReviewEntry = await RatingsAndReviews.findOne({ productRef: req.params.id });
-        await ratingAndReviewEntry.updateOne({ $push: { ratingsAndReviews: userRating }});
-        await ratingAndReviewEntry.updateOne({ $inc: { ratingsAggregate: req.body.rating , numOfRatings: 1 }});
-        console.log('ratingAndReviews', ratingAndReviewEntry);
+        const ratingAndReviewEntry = await RatingsAndReviews.findOneAndUpdate({ productRef: req.params.id }, { $push: { ratingsAndReviews: userRating },  $inc: { ratingsAggregate: req.body.rating , numOfRatings: 1 }}, { new: true });
+        // console.log('ratingAndReviews', ratingAndReviewEntry);
         const updatedRating = (ratingAndReviewEntry.ratingsAggregate / ratingAndReviewEntry.numOfRatings).toFixed(1);
-        console.log(updatedRating);
-        const productEntry = await ProductEntry.findById(req.params.id);
-        productEntry.rating = updatedRating;
-        productEntry.save();
+        // console.log(updatedRating);
+        const productEntry = await ProductEntry.findByIdAndUpdate({ _id: req.params.id }, { rating: updatedRating }, { new: true });
         console.log(productEntry);
-        res.status(201).json(ratingAndReviewEntry); // Problem here: this doesn't return the updated document.
+        res.status(201).json(ratingAndReviewEntry);
     } catch (err) {
         next(err);
     }
