@@ -15,15 +15,18 @@ export default function useFetch(url, requestType, payload, headers) {
                     console.log('Login header type', typeof res.headers.get('isLoggedIn'));
                     setLoggedIn(res.headers.get('isLoggedIn'));
                 }
-                const jsonRes = await res.json();
-                console.log('Json res', jsonRes);
-                setData(jsonRes);
+                if (res.status !== 204) {
+                    const jsonRes = await res.json();
+                    console.log('Json res', jsonRes);
+                    setData(jsonRes);
+                }
+                setLoading(false);
             } catch (err) {
                 console.log('In the useFetch error handler', err.message);
                 setError(err.message);
-                // setLoading(false);
+                setLoading(false);
             }
-            setLoading(false);
+            // setLoading(false);
         }
         retrieveAuthAndComponentData(url);
     }, [url]);

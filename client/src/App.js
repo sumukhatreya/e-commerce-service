@@ -5,6 +5,7 @@ import RegistrationForm from './components/register';
 import LoginForm from './components/login';
 import ProductList from './components/product/productList';
 import ProductPage from './components/product/productPage';
+import ProductRatingAndReview from './components/product/productRatingAndReviewPage';
 
 
 class App extends React.Component {
@@ -48,7 +49,11 @@ class App extends React.Component {
             <ProductList loginFunction={(newLogin) => {this.updateLogin(newLogin)}}/>
           </Route>
           <Route exact path='/products/:id'>
-            <ProductPage />
+            <ProductPage loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
+          </Route>
+          <Route exact path='/products/:id/review'>
+            {/* <h1>Hello there! Welcome to the review page</h1> */}
+            <ProductRatingAndReview loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
         </Switch>
       </Router>

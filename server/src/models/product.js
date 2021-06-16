@@ -24,14 +24,16 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     rating: {
-        type: Number
+        type: Number,
+        required: true,
+        default: 0
     },
     available: {
         type: Boolean,
         required: true
     },
     ratingsRef: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'RatingsAndReviews',
         required: true
     }

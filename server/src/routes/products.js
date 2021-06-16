@@ -1,6 +1,4 @@
-const { Router, query } = require('express');
-const { Query, Mongoose, model, Model } = require('mongoose');
-const { findOne } = require('../models/product');
+const { Router } = require('express');
 const ProductEntry = require('../models/product');
 const RatingsAndReviews = require('../models/productRatingsAndReviews');
 const { verifyJWT } = require('../utils');
@@ -21,7 +19,12 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const product = await ProductEntry.findById(req.params.id).populate('ratingsRef', 'ratingsAndReviews',  RatingsAndReviews);
+        const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
+        // const product = await ProductEntry.findById(req.params.id).populate('ratingsRef', 'ratingsAndReviews',  RatingsAndReviews);
+        console.log('Heres the id in the id route', req.params.id);
+        const product = await ProductEntry.findOne({_id: req.params.id}).populate('ratingsRef', 'ratingsAndReviews', RatingsAndReviews);
         if (!product.available) {
             res.status(404);
             throw new Error('Resource removed');
@@ -44,21 +47,23 @@ router.post('/:id', async (req, res, next) => {
 
 router.get('/:id/review', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = 'ssa';
+        const header = verifyJWT(req);
+        // const header = 'ssa';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
             res.status(401);
             throw new Error('Unauthorized user');
         }
+        console.log('Heres the id', req.params);
+        // I could maybe even use ratingsAndReviews.usernmae: header instead of the positional elemMatch operator.
         const userReview = await RatingsAndReviews.findOne(
             { productRef: req.params.id }, 
             { ratingsAndReviews: { $elemMatch: { 'username': header }}}
         );
         console.log(userReview);
         if (userReview.ratingsAndReviews.length === 0) {
-            res.status(204).json({ message: 'Entry does not exist' });
+            res.status(204).json({ message: 'No data'});
         } else {
             console.log('userReview', userReview.ratingsAndReviews[0]);
             res.status(200).json(userReview.ratingsAndReviews[0]);
@@ -70,8 +75,8 @@ router.get('/:id/review', async (req, res, next) => {
 
 router.post('/:id/review', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = 'ssa';
+        const header = verifyJWT(req);
+        // const header = 'ada';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
@@ -89,7 +94,7 @@ router.post('/:id/review', async (req, res, next) => {
             lastUpdated: Date.now()
         };
         const ratingAndReviewEntry = await RatingsAndReviews.findOneAndUpdate(
-            { productRef: req.params.id, 'ratingsAndReviews.username': header }, 
+            { productRef: req.params.id }, 
             { $push: { ratingsAndReviews: userRating },  $inc: { ratingsAggregate: req.body.rating, numOfRatings: 1 }}, 
             { new: true }
         );
@@ -106,15 +111,15 @@ router.post('/:id/review', async (req, res, next) => {
 
 router.put('/:id/review', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = 'ada';
+        const header = verifyJWT(req);
+        // const header = 'ada';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
             res.status(401);
             throw new Error('Unauthorized user');
         } 
-        const netUserRating = req.body.oldRating - req.body.rating;
+        const netUserRating = req.body.rating - req.body.oldRating;
         const ratingAndReviewEntry = await RatingsAndReviews.findOneAndUpdate(
             { productRef: req.params.id, 'ratingsAndReviews.username': header }, 
             { $set: 
@@ -122,7 +127,7 @@ router.put('/:id/review', async (req, res, next) => {
                   'ratingsAndReviews.$.rating': req.body.rating, 
                   'ratingsAndReviews.$.lastUpdated': Date.now() 
                 },
-            $inc: { ratingsAggregate: netUserRating }
+              $inc: { ratingsAggregate: netUserRating }
             }, 
             { new: true }
         );
@@ -138,8 +143,8 @@ router.put('/:id/review', async (req, res, next) => {
 
 router.delete('/:id/review', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = 'ssa';
+        const header = verifyJWT(req);
+        // const header = 'ada';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
         res.set(headers);
         if (header === '') {
