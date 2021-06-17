@@ -1,14 +1,18 @@
 
 // Error handler for fetch requests
 const fetchErrorHandler = async (res) => {
+    let err = null;
     if (res.status <= 451) {
         const jsonRes = await res.json();
         console.log(jsonRes);
-        throw new Error(jsonRes.message);
+        err = new Error(jsonRes.message);
+        err.status = res.status;
     } else if (res.status >= 500) {
         console.log('Status text', res.statusText);
-        throw new Error(res.statusText);
+        err = new Error(res.statusText);
+        err.status = res.status;
     }
+    throw err;
 }
 
 // Fetch request handler.

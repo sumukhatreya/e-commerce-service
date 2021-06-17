@@ -22,7 +22,7 @@ export default function useFetch(url, requestType, payload, headers) {
                 }
                 setLoading(false);
             } catch (err) {
-                console.log('In the useFetch error handler', err.message);
+                console.log('In the useFetch error handler', err.status, err.message);
                 setError(err.message);
                 setLoading(false);
             }

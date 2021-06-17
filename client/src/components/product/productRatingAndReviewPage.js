@@ -9,40 +9,39 @@ export default function ProductRatingAndReview({ loginFunction }) {
     const { id } = useParams();
     const history = useHistory();
     const reqUrl = `http://localhost:5000/products/${id}/review`;
-    const [error, setError] = useState('');
-    const [dataReceived, setDataReceived] = useState(false);
+    // const [dataReceived, setDataReceived] = useState(false);
     const header = { 'Content-Type': 'application/json' };
     const { isLoading, isLoggedIn, isError, data } = useFetch(reqUrl, 'GET', null, header);
+    const [error, setError] = useState('');
+    const [mainError, setMainError] = useState(isError);
+    const [loading, setLoading] = useState(isLoading);
+
 
     useEffect(() => {
-        console.log('ProductRatingAndReview function', data);
-        if (data) {
-            setDataReceived(true);
-            console.log('setReceivedData set to true', dataReceived, data);
+        // console.log('ProductRatingAndReview function', data);
+        if (!isLoading) {
+            setLoading(isLoading);
+        }
+        if (isError) {
+            setMainError(isError);
         }
         if (isLoggedIn) {
             loginFunction(true);
         } else {
             loginFunction(false);
         }
-    }, [isLoggedIn, data]);
+    }, [isLoggedIn, isLoading, isError]);
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            oldRating: dataReceived ? data.rating : '',
-            rating: dataReceived ? data.rating : '',
-            review: dataReceived ? data.review : '',
+            oldRating: data ? data.rating : '',
+            rating: data ? data.rating : '',
+            review: data ? data.review : '',
             submitAction: '',
-            showSubmitButton: dataReceived ? false : true,
-            showUpdateButton: dataReceived ? true : false,
-            showDeleteButton: dataReceived ? true :  false
-            // oldRating: '',
-            // rating: '',
-            // review: '',
-            // submitAction: '',
-            // showSubmitButton: true,
-            // showUpdateButton: false,
-            // showDeleteButton: false
+            showSubmitButton: data ? false : true,
+            showUpdateButton: data ? true : false,
+            showDeleteButton: data ? true :  false
         },
         validationSchema: Yup.object({
             rating: Yup.number().positive().integer().min(1).max(5).required('Please enter an integer valued rating between 1 and 5'),
@@ -50,9 +49,10 @@ export default function ProductRatingAndReview({ loginFunction }) {
         }),
         onSubmit: async (values) => {
             try {
+                setLoading(true);
                 let payload = null;
                 let request = null;
-                if (values.submitAction === 'submit') {
+                if (values.submitAction === 'create') {
                     payload = JSON.stringify({
                         rating: values.rating,
                         review: values.review
@@ -66,7 +66,7 @@ export default function ProductRatingAndReview({ loginFunction }) {
                     });
                     request = 'PUT';
                 } else if (values.submitAction === 'delete') {
-                    payload = ({
+                    payload = JSON.stringify({
                         rating: values.rating
                     });
                     request = 'DELETE';
@@ -74,16 +74,19 @@ export default function ProductRatingAndReview({ loginFunction }) {
                 await fetchData(request, reqUrl, payload, header);
                 history.push(`/products/${id}`);
             } catch (err) {
-                console.log(err);
-                setError(err.message);
+                console.log('In prodcutRatingAndReview error handler', err);
+                if (err.status === 401) {
+                    setMainError(err.message);
+                } else {
+                    setError(err.message);
+                }
+                setLoading(false);
             }
         }
     });
 
-    if (isLoading) {
-        return (<h1>Loading...</h1>);
-    } else if (isError) {
-        return (<h1>{isError}</h1>);
+    if (mainError) {
+        return (<h1>{mainError}</h1>);
     }
 
     return (
@@ -107,7 +110,7 @@ export default function ProductRatingAndReview({ loginFunction }) {
                 />
 
                 {formik.values.showSubmitButton && 
-                <button onClick={() => formik.setFieldValue('submitAction', 'submit')}>
+                <button onClick={() => formik.setFieldValue('submitAction', 'create')}>
                     Submit
                 </button>}
 
@@ -123,6 +126,9 @@ export default function ProductRatingAndReview({ loginFunction }) {
 
                 {error && <h2>{error}</h2>}
             </form>
+
+            {loading && <h1>Loading...</h1>}
+
         </div>
     )
 }

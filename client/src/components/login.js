@@ -6,17 +6,21 @@ import useFetch from '../utils/custom hooks/useFetch';
 import { useHistory, Redirect } from 'react-router-dom';
 
 export default function LoginForm({ loginFunction }) {
-    const [error, setError] = useState('');
     const history = useHistory();
     const header = { 'Content-Type' : 'application/json' };
     const { isLoading, isLoggedIn, isError } = useFetch('http://localhost:5000/login', 'GET', null, header);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(isLoading);
     
     useEffect(() => {
         if(isLoggedIn) {
             console.log('isLoggedIn useEffect', isLoggedIn);
             loginFunction(true);
         };
-    }, [isLoggedIn]);
+        if (!isLoading) {
+            setLoading(isLoading);
+        }
+    }, [isLoggedIn, isLoading]);
 
     const formik = useFormik({
         initialValues: {
@@ -29,6 +33,7 @@ export default function LoginForm({ loginFunction }) {
         }),
         onSubmit: async (values) => {
             try {
+                setLoading(true);
                 const payload = JSON.stringify(values);
                 console.log(payload);
                 const header = { 'Content-Type': 'application/json' };
@@ -41,22 +46,18 @@ export default function LoginForm({ loginFunction }) {
                 console.log(err);
                 values.password = '';
                 setError(err.message);
+                setLoading(false);
             }
         }
     })
 
-    if (isLoading) {
-        return <h1>Loading...</h1>
-    } else {
-        if (isLoggedIn) {
-            console.log('isLoggedIn', isLoggedIn);
-            return <Redirect to='/products'/> // useHistory cannot be used here.
-        }
-        if (isError) {
-            setError(isError);
-        }
+    if (isLoggedIn) {
+        console.log('isLoggedIn', isLoggedIn);
+        return <Redirect to='/products'/> // useHistory cannot be used here.
     }
-    
+    if (isError) {
+        setError(isError);
+    }
 
     return (
         <div>
@@ -84,6 +85,8 @@ export default function LoginForm({ loginFunction }) {
                 {error && <h2>{error}</h2>}
             </form>
 
+            {loading && <h1>Loading...</h1>}
+
         </div>
-    )
+    );
 }
