@@ -143,6 +143,7 @@ router.put('/:id/review', async (req, res, next) => {
 
 router.delete('/:id/review', async (req, res, next) => {
     try {
+        console.log('Just enetered the delete route');
         const header = verifyJWT(req);
         // const header = 'ada';
         const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
@@ -151,11 +152,13 @@ router.delete('/:id/review', async (req, res, next) => {
             res.status(401);
             throw new Error('Unauthorized user');
         }
+        console.log('In the delete route');
         const ratingAndReviewEntry = await RatingsAndReviews.findOneAndUpdate(
             { productRef: req.params.id, 'ratingsAndReviews.username': header }, 
             { $pull: { ratingsAndReviews: { username: header }}, $inc: { ratingsAggregate: -req.body.rating, numOfRatings: -1 }}, 
             { new: true }
         );
+        console.log('Updated rating and review entry delete');
         let updatedRating = null;
         if (ratingAndReviewEntry.numOfRatings > 0) {
             updatedRating = (ratingAndReviewEntry.ratingsAggregate / ratingAndReviewEntry.numOfRatings).toFixed(1); 
@@ -163,7 +166,7 @@ router.delete('/:id/review', async (req, res, next) => {
             updatedRating = 0;
         }
         const productEntry = await ProductEntry.findByIdAndUpdate({ _id: req.params.id }, { rating: updatedRating}, { new: true });
-        console.log(productEntry);
+        console.log('productEntry', productEntry);
         res.status(200).json(ratingAndReviewEntry);
     } catch (err) {
         next(err);
