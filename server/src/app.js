@@ -9,6 +9,7 @@ const login = require('./routes/auth/login');
 const register = require('./routes/auth/register');
 const products = require('./routes/products');
 const sell = require('./routes/sell');
+const cart = require('./routes/cart/cart');
 
 const app = express();
 app.use(helmet());
@@ -38,6 +39,9 @@ app.use('/products', products);
 
 // Sell route
 app.use('/sell', sell);
+
+// Cart route
+app.use('/cart', cart);
 
 
 // Error handling
