@@ -13,7 +13,7 @@ const cartItemSchema = new mongoose.Schema({
     seller: {
         type: String,
         required: true,
-        unique: true
+        index: true
     },
     price: {
         type: Number,
