@@ -12,8 +12,7 @@ const cartItemSchema = new mongoose.Schema({
     },
     seller: {
         type: String,
-        required: true,
-        index: true
+        required: true
     },
     price: {
         type: Number,
@@ -37,6 +36,9 @@ const cartSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    shippingAddress: {
+        type: String
     },
     cartItems: [cartItemSchema]
 });
