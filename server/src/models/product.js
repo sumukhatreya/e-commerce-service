@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     ratingsRef: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'RatingsAndReviews',
         required: true
     }

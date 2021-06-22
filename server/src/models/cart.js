@@ -30,15 +30,19 @@ const cartSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        
+    },
+    shippingAddress: {
+        type: String
     },
     totalCost: {
         type: Number,
         required: true,
         default: 0
     },
-    shippingAddress: {
-        type: String
+    numOfItems: {
+        type: Number,
+        required: true,
+        default: 0
     },
     cartItems: [cartItemSchema]
 });

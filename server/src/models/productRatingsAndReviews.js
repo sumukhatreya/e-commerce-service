@@ -21,7 +21,7 @@ const arraySchema = new mongoose.Schema({
 
 const ratingAndReviewSchema = new mongoose.Schema({
     productRef: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true
     },
