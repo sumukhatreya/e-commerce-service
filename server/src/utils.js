@@ -27,6 +27,7 @@ const verifyJWT = (req) => {
             throw new Error('Token not found');
         }
     } catch (err) {
+        // console.log(err);
         return '';
     }
 }

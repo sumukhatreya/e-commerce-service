@@ -1,11 +1,13 @@
 const { Router} = require('express');
 const UserEntry = require('../../models/user');
+const Cart = require('../../models/cart');
 const { createJWT, verifyJWT } = require('../../utils');
 
 const router = Router();
 
-router.post('/', verifyJWT , async (req, res, next) => {
+router.post('/' , async (req, res, next) => {
     try {
+
         // console.log(req.body);
         if (req.body.validate) {
             // console.log(req.body.username);
@@ -18,9 +20,12 @@ router.post('/', verifyJWT , async (req, res, next) => {
                 res.status(202).json({message: 'Username not in use'});
             }
         } else {
+            console.log('Im in the register route');
             const userEntry = new UserEntry(req.body);
+            const cartEntry = new Cart(req.body);
+            await cartEntry.save();
             const createdEntry = await userEntry.save();
-            const token = createJWT(createdEntry._id, '23h');
+            const token = createJWT(createdEntry.username, '23h');
             res.cookie('jwt', token, { httpOnly: true, sameSite: 'strict' });
             res.status(201).json({ message: 'Account created' });
         }

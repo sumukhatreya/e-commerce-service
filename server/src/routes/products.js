@@ -36,15 +36,6 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// Add to cart
-router.post('/:id', async (req, res, next) => {
-    try {
-
-    } catch (err) {
-        next(err);
-    }
-});
-
 router.get('/:id/review', async (req, res, next) => {
     try {
         const header = verifyJWT(req);
