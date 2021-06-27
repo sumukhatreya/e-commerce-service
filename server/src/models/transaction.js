@@ -11,7 +11,7 @@ const transactionItemSchema = new mongoose.Schema({
         required: true,
         index: true
     }
-}, { timestamps: true });
+});
 
 const transactionSchema = new mongoose.Schema({
     username: {
@@ -24,8 +24,8 @@ const transactionSchema = new mongoose.Schema({
         required: true
     },
     transactionItems: [transactionItemSchema]
-});
+}, { timestamps: true });
 
-const Transaction = mongoose.Model('transaction', transactionSchema);
+const Transaction = mongoose.model('transaction', transactionSchema);
 
 module.exports = Transaction;
