@@ -6,6 +6,8 @@ import LoginForm from './components/login';
 import ProductList from './components/product/productList';
 import ProductPage from './components/product/productPage';
 import ProductRatingAndReview from './components/product/productRatingAndReviewPage';
+import Cart from './components/cart/cart';
+import Checkout from './components/checkout';
 
 
 class App extends React.Component {
@@ -54,6 +56,12 @@ class App extends React.Component {
           <Route exact path='/products/:id/review'>
             {/* <h1>Hello there! Welcome to the review page</h1> */}
             <ProductRatingAndReview loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
+          </Route>
+          <Route exact path='/cart'>
+            <Cart loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
+          </Route>
+          <Route exact path='/cart/checkout'>
+            <Checkout />
           </Route>
         </Switch>
       </Router>

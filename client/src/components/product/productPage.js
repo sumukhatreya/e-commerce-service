@@ -31,7 +31,7 @@ export default function ProductPage({ loginFunction }) {
             <h2>{data.title}</h2>
             <h3>Description: </h3><p>{data.description}</p>
             <h3>Rating: </h3>{data.rating ? <p>{data.rating} / 5</p> : <p>- / 5</p>}
-            <AddToCartDisplay price={data.price} seller={data.seller}/>
+            <AddToCartDisplay price={data.price} seller={data.seller} productId={id}/>
             <h2>Ratings and reviews:</h2>
             <h3><Link to={`/products/${id}/review`}>Write or edit a review</Link></h3>
             {data.ratingsRef.ratingsAndReviews.map(entry => (
