@@ -7,8 +7,10 @@ const router = Router();
 // Get checkout page details
 router.get('/', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = "ssa";
+        const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
+        // const header = "ssa";
         if (!header) {
             res.status(401);
             throw new Error('Unauthorized user');
@@ -23,8 +25,10 @@ router.get('/', async (req, res, next) => {
 // Process transaction
 router.post('/', async (req, res, next) => {
     try {
-        // const header = verifyJWT(req);
-        const header = "ssa";
+        const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
+        // const header = "ssa";
         if (!header) {
             res.status(401);
             throw new Error('Unauthorized user');

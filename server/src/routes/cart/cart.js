@@ -11,6 +11,8 @@ const router = Router();
 router.get('/', async (req, res, next) => {
     try {
         const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
         // const header = "ssa";
         if (!header) {
             res.status(401);
@@ -27,6 +29,8 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
         // const header = "ssa";
         if (!header) {
             res.status(401);
@@ -60,6 +64,8 @@ router.post('/', async (req, res, next) => {
 router.delete('/', async (req, res, next) => {
     try {
         const header = verifyJWT(req);
+        const headers = { 'Access-Control-Expose-Headers': 'isLoggedIn', 'isLoggedIn': header };
+        res.set(headers);
         // const header = "ssa";
         if(!header) {
             res.status(401);
