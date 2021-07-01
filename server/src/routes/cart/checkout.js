@@ -43,11 +43,15 @@ router.post('/', async (req, res, next) => {
         transaction.transactionAmount = cart.totalCost;
         transaction.transactionItems = cart.cartItems;
         const userTransaction = await transaction.save();
-        // res.status(200).json({ 
-        //     message: 'Transaction processed',
-        //     id: transaction._id
-        // });
-        res.status(201).json(userTransaction);
+        cart.cartItems = [];
+        cart.numOfItems = 0;
+        cart.totalCost = 0;
+        await cart.save();
+        res.status(201).json({ 
+            message: 'Transaction processed',
+            id: transaction._id
+        });
+        // res.status(201).json(userTransaction);
     } catch (err) {
         next(err);
     }
