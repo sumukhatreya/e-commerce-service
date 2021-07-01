@@ -42,7 +42,7 @@ router.post('/', async (req, res, next) => {
         transaction.username = cart.username;
         transaction.transactionAmount = cart.totalCost;
         transaction.transactionItems = cart.cartItems;
-        const userTransaction = await transaction.save();
+        await transaction.save();
         cart.cartItems = [];
         cart.numOfItems = 0;
         cart.totalCost = 0;
