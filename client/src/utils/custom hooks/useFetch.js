@@ -7,9 +7,10 @@ export default function useFetch(url, requestType, payload, headers) {
     const [isError, setError] = useState('');
     const [data, setData] = useState(null);
     useEffect(() => {
+        const abortCont = new AbortController();
         async function retrieveAuthAndComponentData(url) {
             try {
-                const res = await fetchData(requestType, url, payload, headers);
+                const res = await fetchData(requestType, url, payload, headers, abortCont.signal);
                 console.log('Response headers 1', res.headers.get('isLoggedIn'));
                 if (res.headers.get('isLoggedIn')) {
                     console.log('Login header type', typeof res.headers.get('isLoggedIn'));
@@ -23,12 +24,16 @@ export default function useFetch(url, requestType, payload, headers) {
                 setLoading(false);
             } catch (err) {
                 console.log('In the useFetch error handler', err.status, err.message);
-                setError(err.message);
-                setLoading(false);
+                if (err.name === 'AbortError') {
+                    console.log('fetch aborted');
+                } else {
+                    setError(err.message);
+                    setLoading(false);
+                }
             }
-            // setLoading(false);
         }
         retrieveAuthAndComponentData(url);
+        return () => abortCont.abort();
     }, [url]);
     return { isLoading, isLoggedIn, isError, data };
 }

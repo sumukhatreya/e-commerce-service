@@ -61,7 +61,7 @@ class App extends React.Component {
             <Cart loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
           <Route exact path='/cart/checkout'>
-            <Checkout />
+            <Checkout loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
         </Switch>
       </Router>

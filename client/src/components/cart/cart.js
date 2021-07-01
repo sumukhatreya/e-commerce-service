@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import useFetch from '../../utils/custom hooks/useFetch';
 import CartEntry from './cartEntry';
 
 export default function Cart({ loginFunction }) {
+    const history = useHistory();
     const url = 'http://localhost:5000/cart';
     const header = { 'Content-Type': 'application/json' };
     const { isLoading, isLoggedIn, isError, data: isData } = useFetch(url, 'GET', null, header);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [data, setData] = useState('');
+    const [data, setData] = useState(null);
 
     useEffect(() => {
         if (!isLoading) {
             setLoading(false);
         }
-        if (isData) {
+        if (isData && isData.cartItems.length > 0) {
             setData(isData);
         }
         if (isLoggedIn) {
@@ -47,6 +49,10 @@ export default function Cart({ loginFunction }) {
         setLoading(false);
     }
 
+    const checkoutItems = () => {
+        history.push('/cart/checkout');
+    }
+
     if (isError) {
         return (<h1>{isError}</h1>);
     }
@@ -54,6 +60,7 @@ export default function Cart({ loginFunction }) {
     return (
         <div>
             {loading && <h1>Loading...</h1>}
+            {!data && <h2>No items in cart</h2>}
             {data && data.cartItems.map((item) => (
                 <CartEntry key={item._id}
                            title={item.productTitle}
@@ -64,8 +71,8 @@ export default function Cart({ loginFunction }) {
                            updateData={updateData}
                 />
             ))}
-            {!data && <h2>No items in cart</h2>}
             {error && <h2>{error}</h2>}
+            {data && <button onClick={checkoutItems}>Checkout</button>}
         </div>
     );
 }

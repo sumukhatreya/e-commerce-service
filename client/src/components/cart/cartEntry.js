@@ -1,4 +1,5 @@
 import { fetchData } from '../../utils/utils';
+import { Link } from 'react-router-dom';
 
 
 export default function CartEntry({ title , rating, price, productId, isPageLoading, updateData }) {
@@ -21,7 +22,7 @@ export default function CartEntry({ title , rating, price, productId, isPageLoad
 
     return (
         <div>
-            <h2>{title}</h2>
+            <Link to={`/products/${productId}`} target='_blank'><h2>{title}</h2></Link>
             {rating ? <h2>{rating} / 5</h2> : <h2>- / 5</h2>}
             <h2>$ {price}</h2>
             <button onClick={removeItem}>Remove</button>

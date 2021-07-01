@@ -16,12 +16,13 @@ const fetchErrorHandler = async (res) => {
 }
 
 // Fetch request handler.
-const fetchData = async (requestType, url, payload, headers) => {
+const fetchData = async (requestType, url, payload, headers, abortSignal) => {
     const res = await fetch(url, {
         method: requestType,
         body: payload,
         headers: headers,
-        credentials: 'include'
+        credentials: 'include',
+        signal: abortSignal ? abortSignal : null
     });
     console.log(res);
     if (!res.ok) {
