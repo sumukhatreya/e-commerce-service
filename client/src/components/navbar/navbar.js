@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import './navbar.css';
 
 export default function Navbar({ isLoggedIn }) {
-
-
     return (
-        <div>
-
+        <div class='navBar'>
+            <ul>
+                <li>Cart</li>
+                <li>Menu</li>
+            </ul>
         </div>
     )
 }

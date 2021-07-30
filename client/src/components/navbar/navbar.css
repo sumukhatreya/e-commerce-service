@@ -1,0 +1,28 @@
+.navBar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: aqua;
+    width: 100%;
+    padding: 15px;
+    z-index: 50;
+}
+
+.navBar ul {
+    white-space: nowrap;
+    position: relative;
+    left: 60%;
+}
+
+.navBar ul li {
+    display: inline;
+    padding: 20px 15px;
+    font-size: 20px;
+    margin: 5px;
+    border: 1px;
+    border-radius: 10%;
+}
+
+@media screen and (max-width: 700px) {
+    
+}

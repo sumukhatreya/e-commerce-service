@@ -54,7 +54,6 @@ class App extends React.Component {
             <ProductPage loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
           <Route exact path='/products/:id/review'>
-            {/* <h1>Hello there! Welcome to the review page</h1> */}
             <ProductRatingAndReview loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
           <Route exact path='/cart'>
@@ -63,9 +62,18 @@ class App extends React.Component {
           <Route exact path='/cart/checkout'>
             <Checkout loginFunction={(newLogin) => this.updateLogin(newLogin)}/>
           </Route>
+          <Route exact path='/profile'>
+            <div>
+              <h1>Welcome to the profile page!</h1>
+            </div>
+          </Route>
+          <Route exact path='/sell'>
+            <div>
+              <h1>Sell an item!</h1>
+            </div>
+          </Route>
         </Switch>
-      </Router>
-      
+      </Router>  
     )
   }
 }
